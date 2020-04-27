@@ -1,0 +1,13 @@
+CalculatorSoap12\Add.xml
+CalculatorSoap12\Divide.xml
+CalculatorSoap12\Multiply.xml
+CalculatorSoap12\Subtract.xml
+CalculatorSoap\Add.xml
+CalculatorSoap\Divide.xml
+CalculatorSoap\Multiply.xml
+CalculatorSoap\Subtract.xml
+Calculator-TestSuite\Add-Test-Case.xml
+Calculator-TestSuite\Divide-Test-Case.xml
+Calculator-TestSuite\Multiply-Test-Case.xml
+Calculator-TestSuite\Substract-Test-Case.xml
+Calculator-TestSuite\Groovy-Script.xml
