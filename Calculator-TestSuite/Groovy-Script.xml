@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="c3de9b31-4b71-4bed-acb3-2fda12fe9abf" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Groovy Script" searchProperties="true" timeout="0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings>
+    <con:setting id="c3de9b31-4b71-4bed-acb3-2fda12fe9abffileName">Groovy-Script</con:setting>
+  </con:settings>
+  <con:savedRecentRuns>1</con:savedRecentRuns>
+  <con:testStep type="groovy" name="Groovy Script Add" id="0ef0b784-de6f-4de5-ab31-6acffdf520a8">
+    <con:settings/>
+    <con:config>
+      <script>import com.eviware.soapui.support.XmlHolder
+import com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext
+
+def addTestStep=testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Add"]
+
+def value1=testRunner.testCase.testSuite.project.getPropertyValue("Val 1")
+log.info "entered value 1 is : $value1"
+def value2=testRunner.testCase.testSuite.project.getPropertyValue("Val 2")
+log.info "entered value 2 is : $value2"
+
+def addResult=value1.toFloat()+value2.toFloat()
+log.info "adding 2 values result: $addResult"
+
+def value3=testRunner.testCase.testSuite.project.getPropertyValue("Val 3")
+log.info "entered value 1 is : $value3"
+def value4=testRunner.testCase.testSuite.project.getPropertyValue("Val 4")
+log.info "entered value 2 is : $value4"
+
+// For adding 2 values
+
+def addRequest=testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Add"].getPropertyValue("Request")
+
+def addData=new XmlHolder(addRequest)
+
+
+addData.setNodeValue("//tem:Add/tem:intA", value1)
+addData.setNodeValue("//tem:Add/tem:intB", value2)
+def newXmlRequest=addData.getXml()
+
+//log.info newXmlRequest
+testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Add"].setPropertyValue("Request", newXmlRequest)
+def addContext=new WsdlTestRunContext(addTestStep)
+addTestStep.run(testRunner, addContext)
+
+// For matching response value
+
+def addResponse=testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Add"].getPropertyValue("Response")
+//log.info addResponse
+def getData=new XmlHolder(addResponse)
+getData.namespaces["ns"]="http://tempuri.org/"
+def getResult=getData.getNodeValue("//ns:AddResult").toInteger()
+log.info "Response is: $getResult"
+
+assert(getResult==addResult)
+
+// Invalid Values for Add Function
+def addInvalidRequest=testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Invalid Values"].getPropertyValue("Request")
+
+def addInvalidTestStep=testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Invalid Values"]
+
+def addInvalidData=new XmlHolder(addInvalidRequest)
+
+addInvalidData.setNodeValue("//tem:Add/tem:intA", value3)
+addInvalidData.setNodeValue("//tem:Add/tem:intB", value4)
+def newXmlInvalidRequest=addInvalidData.getXml()
+
+//log.info newXmlRequest
+testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Invalid Values"].setPropertyValue("Request", newXmlInvalidRequest)
+def addInvalidContext=new WsdlTestRunContext(addInvalidTestStep)
+addInvalidTestStep.run(testRunner, addInvalidContext)
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpResponseHeaders = testRunner.testCase.testSuite.testCases["Add Test Case"].testSteps["Invalid Values"].testRequest.response.responseHeaders
+def httpStatus = httpResponseHeaders["#status#"]
+def httpStatusCode = (httpStatus =~ "[1-5]\\d\\d")[0]
+def httpStatusCodeFinal=httpStatusCode.toInteger()
+
+log.info("HTTP status code: " + httpStatusCode)
+assert(httpStatusCodeFinal==500)</script>
+    </con:config>
+  </con:testStep>
+  <con:testStep type="groovy" name="Groovy Script Divide" id="d131fca6-fde6-419c-8658-4daf20739a95">
+    <con:settings/>
+    <con:config>
+      <script>import com.eviware.soapui.support.XmlHolder
+import com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext
+
+
+def value1=testRunner.testCase.testSuite.project.getPropertyValue("Val 1")
+log.info "entered value 1 is : $value1"
+def value2=testRunner.testCase.testSuite.project.getPropertyValue("Val 2")
+log.info "entered value 2 is : $value2"
+
+def divideResult=value1.toFloat()/value2.toFloat()
+log.info "division of 2 values result: $divideResult"
+
+def value3=testRunner.testCase.testSuite.project.getPropertyValue("Val 3")
+log.info "entered value 1 is : $value3"
+def value4=testRunner.testCase.testSuite.project.getPropertyValue("Val 4")
+log.info "entered value 2 is : $value4"
+
+
+// For verifying divide function
+def divideTestStep= testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide"]
+def divideRequest= testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide"].getPropertyValue("Request")
+
+def divideXml=new XmlHolder(divideRequest)
+divideXml.setNodeValue("//tem:intA", value1)
+divideXml.setNodeValue("//tem:intB", value2)
+
+def newXmlDivideRequest=divideXml.getXml()
+
+testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide"].setPropertyValue("Request", newXmlDivideRequest)
+
+def divideContext=new WsdlTestRunContext(divideTestStep)
+
+divideTestStep.run(testRunner,divideContext)
+
+// Verifying output in response
+
+
+def divideResponse=testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide"].getPropertyValue("Response")
+
+def getDivideData=new XmlHolder(divideResponse)
+getDivideData.namespaces["ns"]="http://tempuri.org/"
+def getDivideResult=getDivideData.getNodeValue("//ns:DivideResult").toInteger()
+log.info "Response is: $getDivideResult"
+
+assert(getDivideResult==divideResult)
+
+
+
+// Invalid Values for Divide Function
+def divideInvalidRequest=testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide with invalid values"].getPropertyValue("Request")
+
+def divideInvalidTestStep=testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide with invalid values"]
+
+def divideInvalidData=new XmlHolder(divideInvalidRequest)
+
+divideInvalidData.setNodeValue("//tem:intA", value3)
+divideInvalidData.setNodeValue("//tem:intB", value4)
+def newXmlDivideInvalidRequest=divideInvalidData.getXml()
+
+//log.info newXmlRequest
+testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide with invalid values"].setPropertyValue("Request", newXmlDivideInvalidRequest)
+def divideInvalidContext=new WsdlTestRunContext(divideInvalidTestStep)
+divideInvalidTestStep.run(testRunner, divideInvalidContext)
+
+//def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpDivideResponseHeaders = testRunner.testCase.testSuite.testCases["Divide Test Case"].testSteps["Divide with invalid values"].testRequest.response.responseHeaders
+def httpDivideStatus = httpDivideResponseHeaders["#status#"]
+def httpDivideStatusCode = (httpDivideStatus =~ "[1-5]\\d\\d")[0]
+def httpDivideStatusCodeFinal=httpDivideStatusCode.toInteger()
+
+log.info("HTTP status code: " + httpDivideStatusCode)
+assert(httpDivideStatusCodeFinal==500)</script>
+    </con:config>
+  </con:testStep>
+  <con:testStep type="groovy" name="Groovy Script Multiply" id="bcfd3fb2-a577-422a-9ec4-2bebed973dab">
+    <con:settings/>
+    <con:config>
+      <script>import com.eviware.soapui.support.XmlHolder
+import com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext
+
+def value1=testRunner.testCase.testSuite.project.getPropertyValue("Val 1")
+log.info "entered value 1 is : $value1"
+def value2=testRunner.testCase.testSuite.project.getPropertyValue("Val 2")
+log.info "entered value 2 is : $value2"
+
+def multiplyResult=value1.toFloat()*value2.toFloat()
+log.info "multiplication of 2 values result: $multiplyResult"
+
+def value3=testRunner.testCase.testSuite.project.getPropertyValue("Val 3")
+log.info "entered value 1 is : $value3"
+def value4=testRunner.testCase.testSuite.project.getPropertyValue("Val 4")
+log.info "entered value 2 is : $value4"
+
+
+// For verifying multiply function
+def multiplyTestStep= testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply"]
+def multiplyRequest= testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply"].getPropertyValue("Request")
+
+def multiplyXml=new XmlHolder(multiplyRequest)
+multiplyXml.setNodeValue("//tem:intA", value1)
+multiplyXml.setNodeValue("//tem:intB", value2)
+
+def newXmlMultiplyRequest=multiplyXml.getXml()
+
+testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply"].setPropertyValue("Request", newXmlMultiplyRequest)
+
+def multiplyContext=new WsdlTestRunContext(multiplyTestStep)
+
+multiplyTestStep.run(testRunner,multiplyContext)
+
+// Verifying output in response
+
+
+def multiplyResponse=testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply"].getPropertyValue("Response")
+
+def getMultiplyData=new XmlHolder(multiplyResponse)
+getMultiplyData.namespaces["ns"]="http://tempuri.org/"
+def getMultiplyResult=getMultiplyData.getNodeValue("//ns:MultiplyResult").toInteger()
+log.info "Response is: $getMultiplyResult"
+
+assert(getMultiplyResult==multiplyResult)
+
+
+// Invalid Values for Multiply Function
+def multiplyInvalidRequest=testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply with invalid values"].getPropertyValue("Request")
+
+def multiplyInvalidTestStep=testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply with invalid values"]
+
+def multiplyInvalidData=new XmlHolder(multiplyInvalidRequest)
+
+multiplyInvalidData.setNodeValue("//tem:intA", value3)
+multiplyInvalidData.setNodeValue("//tem:intB", value4)
+def newXmlMultiplyInvalidRequest=multiplyInvalidData.getXml()
+
+//log.info newXmlRequest
+testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply with invalid values"].setPropertyValue("Request", newXmlMultiplyInvalidRequest)
+def multiplyInvalidContext=new WsdlTestRunContext(multiplyInvalidTestStep)
+multiplyInvalidTestStep.run(testRunner, multiplyInvalidContext)
+
+//def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpMultiplyResponseHeaders = testRunner.testCase.testSuite.testCases["Multiply Test Case"].testSteps["Multiply with invalid values"].testRequest.response.responseHeaders
+def httpMultiplyStatus = httpMultiplyResponseHeaders["#status#"]
+def httpMultiplyStatusCode = (httpMultiplyStatus =~ "[1-5]\\d\\d")[0]
+def httpMultiplyStatusCodeFinal=httpMultiplyStatusCode.toInteger()
+
+log.info("HTTP status code: " + httpMultiplyStatusCode)
+assert(httpMultiplyStatusCodeFinal==500)</script>
+    </con:config>
+  </con:testStep>
+  <con:testStep type="groovy" name="Groovy Script Substract" id="8697330e-0e86-43fe-a977-8781f68da268">
+    <con:settings/>
+    <con:config>
+      <script>import com.eviware.soapui.support.XmlHolder
+import com.eviware.soapui.impl.wsdl.testcase.WsdlTestRunContext
+
+def value1=testRunner.testCase.testSuite.project.getPropertyValue("Val 1")
+log.info "entered value 1 is : $value1"
+def value2=testRunner.testCase.testSuite.project.getPropertyValue("Val 2")
+log.info "entered value 2 is : $value2"
+
+def substractResult=(value1.toFloat())-(value2.toFloat())
+log.info "substraction of 2 values result: $substractResult"
+
+def value3=testRunner.testCase.testSuite.project.getPropertyValue("Val 3")
+log.info "entered value 1 is : $value3"
+def value4=testRunner.testCase.testSuite.project.getPropertyValue("Val 4")
+log.info "entered value 2 is : $value4"
+
+// For verifying substract  function
+def substractTestStep= testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract"]
+def substractRequest= testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract"].getPropertyValue("Request")
+
+def substractXml=new XmlHolder(substractRequest)
+substractXml.setNodeValue("//tem:intA", value1)
+substractXml.setNodeValue("//tem:intB", value2)
+
+def newXmlSubstractRequest=substractXml.getXml()
+
+testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract"].setPropertyValue("Request", newXmlSubstractRequest)
+
+def substractContext=new WsdlTestRunContext(substractTestStep)
+
+substractTestStep.run(testRunner, substractContext)
+
+// Verifying output in response
+
+
+def substractResponse=testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract"].getPropertyValue("Response")
+//log.info substractResponse
+
+
+def getSubstractData=new XmlHolder(substractResponse)
+getSubstractData.namespaces["ns"]="http://tempuri.org/"
+def getSubstractResult=getSubstractData.getNodeValue("//ns:SubtractResult").toInteger()
+log.info "Response is: $getSubstractResult"
+
+
+assert(getSubstractResult==substractResult)
+
+// Invalid Values for Substract Function
+def substractInvalidRequest=testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract with invalid values"].getPropertyValue("Request")
+
+def substractInvalidTestStep=testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract with invalid values"]
+
+def substractInvalidData=new XmlHolder(substractInvalidRequest)
+
+substractInvalidData.setNodeValue("//tem:intA", value3)
+substractInvalidData.setNodeValue("//tem:intB", value4)
+def newXmlSubstractInvalidRequest=substractInvalidData.getXml()
+
+//log.info newXmlRequest
+testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract with invalid values"].setPropertyValue("Request", newXmlSubstractInvalidRequest)
+def substractInvalidContext=new WsdlTestRunContext(substractInvalidTestStep)
+substractInvalidTestStep.run(testRunner, substractInvalidContext)
+
+//def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpSubstractResponseHeaders = testRunner.testCase.testSuite.testCases["Substract Test Case"].testSteps["Substract with invalid values"].testRequest.response.responseHeaders
+def httpSubstractStatus = httpSubstractResponseHeaders["#status#"]
+def httpSubstractStatusCode = (httpSubstractStatus =~ "[1-5]\\d\\d")[0]
+def httpSubstractStatusCodeFinal=httpSubstractStatusCode.toInteger()
+
+log.info("HTTP status code: " + httpSubstractStatusCode)
+assert(httpSubstractStatusCodeFinal==500)</script>
+    </con:config>
+  </con:testStep>
+  <con:properties/>
+  <con:reportParameters/>
+  <con:breakPoints>
+    <con:testStepId>0ef0b784-de6f-4de5-ab31-6acffdf520a8</con:testStepId>
+    <con:status>NONE</con:status>
+    <con:properties/>
+  </con:breakPoints>
+</con:testCase>
